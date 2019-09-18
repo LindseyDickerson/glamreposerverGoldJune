@@ -15,5 +15,6 @@ app.use(express.json());
 app.use('/api/user', user);
 app.use('/api/glam', glam);
 
+app.use(require('./middleware/validate-session'));
 
 app.listen(process.env.PORT, () => console.log(`app is listening on ${process.env.PORT}`));

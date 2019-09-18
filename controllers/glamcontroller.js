@@ -1,13 +1,15 @@
 const router = require('express').Router();
+const sequelize = require('../db');
+const User = sequelize.import('../models/user');
 const Glam = require('../db').import('../models/glam');
 const validateSession = require('../middleware/validate-session')
 
-router.get('/', (req, res) => {
-    Glam.FindAll()
+router.get('/getall', (req, res) => {
+    Glam.findAll()
     .then(glam => res.status(200).json(glam))
     .catch(err => res.status(500).json({ error: err}))
 })
-    router.post('/', validateSession, (req, res) => {
+    router.post('/create', validateSession, (req, res) => {
         if (!req.errors) {
             const glamFromRequest = {
                 glamBrand: req.body.glamBrand,
@@ -26,8 +28,8 @@ router.get('/', (req, res) => {
         }
     })
 
-    router.get('/:name', (req, res) => {
-        Glam.findOne({ where: { nameOfGlam: req.params.name }})
+    router.get('/:id', (req, res) => {
+        Glam.findOne({ where: { id: req.params.id }})
         .then(glam => res.status(200).json(glam))
         .catch(err => res.status(500).json({ error: err}))
     })
@@ -51,5 +53,15 @@ router.get('/', (req, res) => {
             res.status(500).json(req.errors)
         }
     })
+
+    // router.put('/update/:id', validateSession, (req, res) => {
+    //     if (!req.errors) {
+    //         Glam.update({ where: { id: req.params.id }})
+    //         .then(glam => res.status(200).json(glam))
+    //         .catch(err => res.json(req.errors))
+    //     } else {
+    //         res.status(500).json(req.errors)
+    //     }
+    // })
 
     module.exports = router;
